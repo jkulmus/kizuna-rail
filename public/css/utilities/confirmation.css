@@ -406,14 +406,43 @@ article.confirmation-page {
 }
 
 @media print {
+    header,
+    nav,
+    footer,
+    button,
+    .confirmation-actions {
+        display: none !important;
+    }
+
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+
     article.confirmation-page {
-        .confirmation-actions {
-            display: none;
-        }
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
 
         .confirmation-header {
             background-color: white;
             border: 2px solid var(--clr-primary);
+            margin-bottom: 1rem;
+            box-shadow: none;
+        }
+
+        .confirmation-content {
+            gap: 1rem;
+        }
+
+        .detail-card,
+        .passenger-info-card,
+        .important-info {
+            box-shadow: none;
+            border: 1px solid #ccc;
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
     }
 }
