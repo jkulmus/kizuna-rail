@@ -406,6 +406,10 @@ article.confirmation-page {
 }
 
 @media print {
+    @page {
+        margin: 0.5in;
+    }
+    
     header,
     nav,
     footer,
