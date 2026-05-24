@@ -1,14 +1,9 @@
-import { generateConfirmationCode, yenToUsd } from '../includes/helpers.js';
+import { generateConfirmationCode, getMonthAbbreviation, yenToUsd } from '../includes/helpers.js';
 import { getDb as db } from './db-in-file.js';
-
-const convertMonthToText = (monthNumber) => {
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return monthNames[monthNumber - 1] || monthNumber;
-};
 
 const convertMonthsToText = (monthNumbersArray) => {
     if (!monthNumbersArray) return [];
-    return monthNumbersArray.map(convertMonthToText);
+    return monthNumbersArray.map(getMonthAbbreviation);
 };
 
 // ROUTE MODEL FUNCTIONS
