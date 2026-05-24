@@ -1,6 +1,18 @@
 import { generateConfirmationCode } from '../includes/helpers.js';
 import { getDb as db } from './db-in-file.js';
 
+// Task 4 Helper: Convert month number to string abbreviations
+const convertMonthsToText = (monthNumbersArray) => {
+    if (!monthNumbersArray) return [];
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNumbersArray.map(num => monthNames[num - 1] || num);
+};
+
+// Task 5 Helper: Converts Yen to USD
+const convertYenToUsdValue = (yenAmount) => {
+    return Math.round(yenAmount * 0.0065);
+};
+
 // ROUTE MODEL FUNCTIONS
 
 export const getAllRoutes = async () => {
@@ -147,6 +159,7 @@ export const getCompleteRouteDetails = async (routeId) => {
 
     return {
         ...route,
+        operatingMonths: convertMonthsToText(route.operatingMonths),
         startStationDetails: startStation,
         endStationDetails: endStation,
         schedules: routeSchedules
@@ -159,7 +172,8 @@ export const calculateTicketPrice = async (routeId, className) => {
 
     if (!route || !ticketClass) return null;
 
-    return route.distance * ticketClass.pricePerKm;
+    // wrap math inside this helper function
+    return convertYenToUsdValue(route.distance * ticketClass.pricePerKm);
 };
 
 export const getTicketOptionsForRoute = async (routeId) => {
@@ -169,7 +183,8 @@ export const getTicketOptionsForRoute = async (routeId) => {
     return db().ticketClasses.map(tc => ({
         class: tc.class,
         name: tc.name,
-        price: route.distance * tc.pricePerKm,
+        // wrap math here as well
+        price: convertYenToUsdValue(route.distance * tc.pricePerKm),
         amenities: tc.amenities,
         description: tc.description
     }));
