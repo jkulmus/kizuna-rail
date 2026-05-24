@@ -1,3 +1,25 @@
+#filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    align-items: center;
+    margin: var(--space-lg) auto;
+    max-width: 720px;
+
+    .filter-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-sm);
+        flex-wrap: wrap;
+
+        select {
+            width: 100%;
+            max-width: 220px;
+        }
+    }
+}
+
 .routes-grid {
     display: flex;
     flex-direction: column;
@@ -299,6 +321,20 @@
                     flex: 1;
                 }
             }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    #filters {
+        grid-template-columns: 1fr 1fr;
+
+        .filter-control:first-child {
+            justify-self: start;
+        }
+
+        .filter-control:last-child {
+            justify-self: end;
         }
     }
 }

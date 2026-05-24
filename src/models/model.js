@@ -1,22 +1,25 @@
-import { generateConfirmationCode } from '../includes/helpers.js';
+import { generateConfirmationCode, yenToUsd } from '../includes/helpers.js';
 import { getDb as db } from './db-in-file.js';
 
-// Task 4 Helper: Convert month number to string abbreviations
-const convertMonthsToText = (monthNumbersArray) => {
-    if (!monthNumbersArray) return [];
+const convertMonthToText = (monthNumber) => {
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return monthNumbersArray.map(num => monthNames[num - 1] || num);
+    return monthNames[monthNumber - 1] || monthNumber;
 };
 
-// Task 5 Helper: Converts Yen to USD
-const convertYenToUsdValue = (yenAmount) => {
-    return Math.round(yenAmount * 0.0065);
+const convertMonthsToText = (monthNumbersArray) => {
+    if (!monthNumbersArray) return [];
+    return monthNumbersArray.map(convertMonthToText);
 };
 
 // ROUTE MODEL FUNCTIONS
 
-export const getAllRoutes = async () => {
-    return db().routes;
+export const getAllRoutes = async ({ region, season } = {}) => {
+    return db().routes.filter(route => {
+        const matchesRegion = !region || region === 'all' || route.region.toLowerCase() === region.toLowerCase();
+        const matchesSeason = !season || season === 'all' || route.bestSeason.toLowerCase() === season.toLowerCase();
+
+        return matchesRegion && matchesSeason;
+    });
 };
 
 export const getListOfRegions = async () => {
@@ -172,8 +175,7 @@ export const calculateTicketPrice = async (routeId, className) => {
 
     if (!route || !ticketClass) return null;
 
-    // wrap math inside this helper function
-    return convertYenToUsdValue(route.distance * ticketClass.pricePerKm);
+    return Math.round(yenToUsd(route.distance * ticketClass.pricePerKm));
 };
 
 export const getTicketOptionsForRoute = async (routeId) => {
@@ -183,8 +185,7 @@ export const getTicketOptionsForRoute = async (routeId) => {
     return db().ticketClasses.map(tc => ({
         class: tc.class,
         name: tc.name,
-        // wrap math here as well
-        price: convertYenToUsdValue(route.distance * tc.pricePerKm),
+        price: Math.round(yenToUsd(route.distance * tc.pricePerKm)),
         amenities: tc.amenities,
         description: tc.description
     }));
